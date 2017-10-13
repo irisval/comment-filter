@@ -14,7 +14,7 @@ function save_options() {
 		status.textContent = "Options saved.";
 		setTimeout(function() {
 			status.textContent = '';
-		}, 750);
+		}, 1000);
 	});
 }
 
@@ -27,5 +27,53 @@ function restore_options() {
 	});
 }
 
+// selectors for comments
+var selectors = ['#content-text'];
+
+
+var processComment = function(comment) {
+  // comment.onclick = function() {
+  //     comment.innerHTML = comment.derpOriginal;
+  //   };
+  //   comment.classList.add('');
+	comment.original = comment.innerHTML;
+	// comment.innerHTML = "yes";
+	chrome.storage.sync.get(null, function(data) { 
+	if (data.one) {
+		// var newComment = comment.original + "1";
+		// comment.innerHTML = newComment;
+		comment.innerHTML = "one";
+	}
+	if (data.two) {
+		// var newComment = comment.original + "2";
+		// comment.innerHTML = newComment;
+		comment.innerHTML = "two";
+	}
+	if (data.three) {
+		// var newComment = comment.original + "3";
+		// comment.innerHTML = newComment;
+		comment.innerHTML = "three";
+	}
+	if (data.four) {
+		// var newComment = comment.original + "4";
+		// comment.innerHTML = newComment;
+		comment.innerHTML = "four";
+	}
+
+});
+}
+
+// build the full selector string
+var selectorString = selectors.map(function(sel) {
+  return sel + ':not(.derped)';
+}).join(", ");
+
+// every 100 milliseconds, derp any un-derped elements
+setInterval(function() {
+  document.querySelectorAll(selectorString).forEach(processComment);
+}, 100);
+
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('save').addEventListener('click', save_options);
+
+

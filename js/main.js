@@ -1,0 +1,2 @@
+var selectors = ['#content-text'];
+
