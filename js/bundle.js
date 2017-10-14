@@ -909,28 +909,31 @@ function restore_options() {
   });
 }
 
+function findAncestor (current, targetClass) {
+    while (!current.classList.contains(targetClass)) {
+      current = current.parentElement;
+    }
+    return current;
+}
 // selectors for comments
 var swearjar = require('swearjar');
 var selectors = ['#content-text'];
+var outerCommentSelector = "ytd-item-section-renderer";
 
 var processComment = function(comment) {
 
   comment.original = comment.innerHTML;
-  comment.onclick = function() {
-      comment.innerHTML = comment.original;
-    };
-    comment.classList.add('parsed');
-  
-  // comment.innerHTML = "yes";
+  comment.classList.add('parsed');
+    // comment.onclick = function() {
+   //    comment.innerHTML = comment.original;
+   //  };
   chrome.storage.sync.get(null, function(data) { 
     if (data.one) {
-    // var newComment = comment.original + "1";
-    // // comment.innerHTML = newComment;
-    if (swearjar.profane(comment.original)) {
-      console.log(comment.original);
-      comment.style.display = "none";
-    }
-  
+      if (swearjar.profane(comment.original)) {
+        console.log(comment.original);
+        comment.outerComment = findAncestor(comment, outerCommentSelector);
+        comment.outerComment.parentNode.removeChild(comment.outerComment);
+      }
   }
   if (data.two) {
     var newComment = comment.original + "2";
