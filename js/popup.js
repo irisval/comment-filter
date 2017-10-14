@@ -28,44 +28,46 @@ function restore_options() {
 }
 
 // selectors for comments
+var swearjar = require('swearjar');
 var selectors = ['#content-text'];
 
-
 var processComment = function(comment) {
-  // comment.onclick = function() {
-  //     comment.innerHTML = comment.derpOriginal;
-  //   };
-  //   comment.classList.add('');
+
 	comment.original = comment.innerHTML;
+  comment.onclick = function() {
+      comment.innerHTML = comment.original;
+    };
+    comment.classList.add('parsed');
+	
 	// comment.innerHTML = "yes";
 	chrome.storage.sync.get(null, function(data) { 
-	if (data.one) {
+		if (data.one) {
 		// var newComment = comment.original + "1";
-		// comment.innerHTML = newComment;
-		comment.innerHTML = "one";
+		// // comment.innerHTML = newComment;
+		if (swearjar.profane(comment.original)) {
+			console.log(comment.original);
+			comment.style.display = "none";
+		}
+	
 	}
 	if (data.two) {
-		// var newComment = comment.original + "2";
-		// comment.innerHTML = newComment;
-		comment.innerHTML = "two";
+		var newComment = comment.original + "2";
+		comment.innerHTML = newComment;
 	}
 	if (data.three) {
-		// var newComment = comment.original + "3";
-		// comment.innerHTML = newComment;
-		comment.innerHTML = "three";
+		var newComment = comment.original + "3";
+		comment.innerHTML = newComment;
 	}
 	if (data.four) {
-		// var newComment = comment.original + "4";
-		// comment.innerHTML = newComment;
-		comment.innerHTML = "four";
+		var newComment = comment.original + "4";
+		comment.innerHTML = newComment;
 	}
-
-});
+	});
 }
 
 // build the full selector string
 var selectorString = selectors.map(function(sel) {
-  return sel + ':not(.derped)';
+  return sel + ':not(.parsed)';
 }).join(", ");
 
 // every 100 milliseconds, derp any un-derped elements
@@ -75,5 +77,3 @@ setInterval(function() {
 
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('save').addEventListener('click', save_options);
-
-

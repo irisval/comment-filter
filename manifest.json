@@ -21,13 +21,15 @@
 			"run_at": "document_end",
 			"all_frames": true,
 			"matches": ["https://apis.google.com/*", "https://plus.googleapis.com/*", "https://www.youtube.com/*"],
-			"js": ["js/main.js", "js/popup.js"]
+			"js": ["js/jquery.min.js","js/bundle.js"]
 		}
 	],
 	"permissions": [
 	    "tabs",
 	    "https://ajax.googleapis.com/",
 	    "https://www.youtube.com/*",
+	    "http://www.purgomalum.com/*",
+	    "webRequest",
 	    "contextMenus",
 		"storage"
 	]
