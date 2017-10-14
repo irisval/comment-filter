@@ -909,8 +909,8 @@ function restore_options() {
   });
 }
 
-function findAncestor (current, targetClass) {
-    while (!current.classList.contains(targetClass)) {
+function findAncestor (current, targetClass, exceptionClass='') {
+    while (!current.classList.contains(targetClass) & !current.classList.contains(exceptionClass)) {
       current = current.parentElement;
     }
     return current;
@@ -919,6 +919,7 @@ function findAncestor (current, targetClass) {
 var swearjar = require('swearjar');
 var selectors = ['#content-text'];
 var outerCommentSelector = "ytd-item-section-renderer";
+var outerSubcommentSelector = "ytd-comment-replies-renderer";
 
 var processComment = function(comment) {
 
@@ -931,7 +932,7 @@ var processComment = function(comment) {
     if (data.one) {
       if (swearjar.profane(comment.original)) {
         console.log(comment.original);
-        comment.outerComment = findAncestor(comment, outerCommentSelector);
+        comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
         comment.outerComment.parentNode.removeChild(comment.outerComment);
       }
   }
