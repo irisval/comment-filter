@@ -921,36 +921,39 @@ var selectors = ['#content-text'];
 var outerCommentSelector = "ytd-item-section-renderer";
 var outerSubcommentSelector = "ytd-comment-replies-renderer";
 
+// <yt-formatted-string id="content-text" slot="content" split-lines="" tabindex="0" class="style-scope ytd-comment-renderer parsed">Mi Parte Favorita <a class="yt-simple-endpoint style-scope yt-formatted-string" href="/watch?v=8j9zMok6two&amp;t=158s">2:38</a> 💙💖&#65279;</yt-formatted-string>
+
 var processComment = function(comment) {
 
-  comment.original = comment.innerHTML;
-  comment.classList.add('parsed');
+    comment.original = comment.innerHTML;
+    comment.classList.add('parsed');
     // comment.onclick = function() {
-   //    comment.innerHTML = comment.original;
-   //  };
-  chrome.storage.sync.get(null, function(data) { 
-    if (data.one) {
-      if (swearjar.profane(comment.original)) {
-        console.log(comment.original);
-        comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
-        comment.outerComment.parentNode.removeChild(comment.outerComment);
-      }
-  }
-  if (data.two) {
-    var newComment = comment.original + "2";
-    comment.innerHTML = newComment;
-  }
-  if (data.three) {
-    var newComment = comment.original + "3";
-    comment.innerHTML = newComment;
-  }
-  if (data.four) {
-    var newComment = comment.original + "4";
-    comment.innerHTML = newComment;
-  }
-  });
+    //    comment.innerHTML = comment.original;
+    //  };
+    chrome.storage.sync.get(null, function(data) {
+        if (data.two) {
+            document.getElementById('comments').parentNode.removeChild(document.getElementById('comments'));
+        } else {
+            if (data.one) {
+              if (swearjar.profane(comment.original)) {
+                console.log(comment.original);
+                comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
+                comment.outerComment.parentNode.removeChild(comment.outerComment);
+              }
+            }
+            if (data.three) {
+                if (comment.getElementsByTagName("A").length > 0) {
+                  comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
+                  comment.outerComment.parentNode.removeChild(comment.outerComment);
+                }
+            }
+            if (data.four) {
+              var newComment = comment.original + "4";
+              comment.innerHTML = newComment;
+            }
+        }
+    });
 }
-
 // build the full selector string
 var selectorString = selectors.map(function(sel) {
   return sel + ':not(.parsed)';

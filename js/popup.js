@@ -55,8 +55,7 @@ var processComment = function(comment) {
 			}
 	}
 	if (data.two) {
-		var newComment = comment.original + "2";
-		comment.innerHTML = newComment;
+		document.getElementById('comments').parentNode.removeChild(document.getElementById('comments'));
 	}
 	if (data.three) {
 		var newComment = comment.original + "3";
