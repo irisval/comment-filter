@@ -1,32 +1,28 @@
 function save_options() {
-	var op1 = document.getElementById('op1').checked;
-	var op2 = document.getElementById('op2').checked;
-	var op3 = document.getElementById('op3').checked;
-	var op4 = document.getElementById('op4').checked;
+  var op1 = document.getElementById('rmv-profanity').checked;
+  var op2 = document.getElementById('rmv-links').checked;
+  var op3 = document.getElementById('rmv-all').checked;
 
-	chrome.storage.sync.set({
-		one: op1,
-		two: op2,
-		three: op3,
-		four: op4
-	}, function() {
-		var status = document.getElementById('status');
-		status.textContent = "Options saved.";
-		setTimeout(function() {
-			status.textContent = '';
-		}, 1000);
-	});
+  chrome.storage.sync.set({
+    profanity: op1,
+    links: op2,
+    removeAll: op3
+  }, function() {
+    var status = document.getElementById('status');
+    status.textContent = "Options saved.";
+    setTimeout(function() {
+      status.textContent = '';
+    }, 1000);
+  });
 }
 
 function restore_options() {
-	chrome.storage.sync.get(null, function(data) {
-		document.getElementById('op1').checked = data.one;
-		document.getElementById('op2').checked = data.two;
-		document.getElementById('op3').checked = data.three;
-		document.getElementById('op4').checked = data.four;
-	});
+  chrome.storage.sync.get(null, function(data) {
+    document.getElementById('rmv-profanity').checked = data.profanity;
+    document.getElementById('rm-links').checked = data.links;
+    document.getElementById('rmv-all').checked = data.removeAll;
+  });
 }
-
 function findAncestor (current, targetClass, exceptionClass='') {
     while (!current.classList.contains(targetClass) & !current.classList.contains(exceptionClass)) {
     	current = current.parentElement;
@@ -41,31 +37,28 @@ var outerSubcommentSelector = "ytd-comment-replies-renderer";
 
 var processComment = function(comment) {
 
-	comment.original = comment.innerHTML;
-	comment.classList.add('parsed');
-  	// comment.onclick = function() {
-   //    comment.innerHTML = comment.original;
-   //  };
-	chrome.storage.sync.get(null, function(data) { 
-		if (data.one) {
-			if (swearjar.profane(comment.original)) {
-				console.log(comment.original);
-				comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
-				comment.outerComment.parentNode.removeChild(comment.outerComment);
-			}
-	}
-	if (data.two) {
-		document.getElementById('comments').parentNode.removeChild(document.getElementById('comments'));
-	}
-	if (data.three) {
-		var newComment = comment.original + "3";
-		comment.innerHTML = newComment;
-	}
-	if (data.four) {
-		var newComment = comment.original + "4";
-		comment.innerHTML = newComment;
-	}
-	});
+    comment.original = comment.innerHTML;
+    comment.classList.add('parsed');
+   
+    chrome.storage.sync.get(null, function(data) {
+        if (data.removeAll) {
+            document.getElementById('comments').parentNode.removeChild(document.getElementById('comments'));
+        } else {
+            if (data.profanity) {
+              if (swearjar.profane(comment.original)) {
+                console.log(comment.original);
+                comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
+                comment.outerComment.parentNode.removeChild(comment.outerComment);
+              }
+            }
+            if (data.links) {
+                if (comment.getElementsByTagName("A").length > 0) {
+                  comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
+                  comment.outerComment.parentNode.removeChild(comment.outerComment);
+                }
+            }
+        }
+    });
 }
 
 // build the full selector string

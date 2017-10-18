@@ -881,16 +881,14 @@ module.exports = swearjar;
 
 },{"./config/en_US.json":3,"path":1}],5:[function(require,module,exports){
 function save_options() {
-  var op1 = document.getElementById('op1').checked;
-  var op2 = document.getElementById('op2').checked;
-  var op3 = document.getElementById('op3').checked;
-  var op4 = document.getElementById('op4').checked;
+  var op1 = document.getElementById('rmv-profanity').checked;
+  var op2 = document.getElementById('rmv-links').checked;
+  var op3 = document.getElementById('rmv-all').checked;
 
   chrome.storage.sync.set({
-    one: op1,
-    two: op2,
-    three: op3,
-    four: op4
+    profanity: op1,
+    links: op2,
+    removeAll: op3
   }, function() {
     var status = document.getElementById('status');
     status.textContent = "Options saved.";
@@ -902,13 +900,11 @@ function save_options() {
 
 function restore_options() {
   chrome.storage.sync.get(null, function(data) {
-    document.getElementById('op1').checked = data.one;
-    document.getElementById('op2').checked = data.two;
-    document.getElementById('op3').checked = data.three;
-    document.getElementById('op4').checked = data.four;
+    document.getElementById('rmv-profanity').checked = data.profanity;
+    document.getElementById('rm-links').checked = data.links;
+    document.getElementById('rmv-all').checked = data.removeAll;
   });
 }
-
 function findAncestor (current, targetClass, exceptionClass='') {
     while (!current.classList.contains(targetClass) & !current.classList.contains(exceptionClass)) {
       current = current.parentElement;
@@ -921,39 +917,32 @@ var selectors = ['#content-text'];
 var outerCommentSelector = "ytd-item-section-renderer";
 var outerSubcommentSelector = "ytd-comment-replies-renderer";
 
-// <yt-formatted-string id="content-text" slot="content" split-lines="" tabindex="0" class="style-scope ytd-comment-renderer parsed">Mi Parte Favorita <a class="yt-simple-endpoint style-scope yt-formatted-string" href="/watch?v=8j9zMok6two&amp;t=158s">2:38</a> 💙💖&#65279;</yt-formatted-string>
-
 var processComment = function(comment) {
 
     comment.original = comment.innerHTML;
     comment.classList.add('parsed');
-    // comment.onclick = function() {
-    //    comment.innerHTML = comment.original;
-    //  };
+   
     chrome.storage.sync.get(null, function(data) {
-        if (data.two) {
+        if (data.removeAll) {
             document.getElementById('comments').parentNode.removeChild(document.getElementById('comments'));
         } else {
-            if (data.one) {
+            if (data.profanity) {
               if (swearjar.profane(comment.original)) {
                 console.log(comment.original);
                 comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
                 comment.outerComment.parentNode.removeChild(comment.outerComment);
               }
             }
-            if (data.three) {
+            if (data.links) {
                 if (comment.getElementsByTagName("A").length > 0) {
                   comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
                   comment.outerComment.parentNode.removeChild(comment.outerComment);
                 }
             }
-            if (data.four) {
-              var newComment = comment.original + "4";
-              comment.innerHTML = newComment;
-            }
         }
     });
 }
+
 // build the full selector string
 var selectorString = selectors.map(function(sel) {
   return sel + ':not(.parsed)';
