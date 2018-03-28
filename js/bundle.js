@@ -879,8 +879,9 @@ swearjar._badWords = require("./config/en_US.json");
 
 module.exports = swearjar;
 
-},{"./config/en_US.json":3,"path":1}],5:[function(require,module,exports){
+},{"./config/en_US.json":3,"path":1}],5:[function(require, module, exports){
 function save_options() {
+  console.log("SKRT");
   var op1 = document.getElementById('rmv-profanity').checked;
   var op2 = document.getElementById('rmv-links').checked;
   var op3 = document.getElementById('rmv-all').checked;
@@ -896,13 +897,14 @@ function save_options() {
       status.textContent = '';
     }, 1000);
   });
+
 }
 
 function restore_options() {
-  chrome.storage.sync.get(null, function(data) {
-    document.getElementById('rmv-profanity').checked = data.profanity;
-    document.getElementById('rm-links').checked = data.links;
-    document.getElementById('rmv-all').checked = data.removeAll;
+    chrome.storage.sync.get(null, function(data) {
+      document.getElementById("rmv-profanity").checked = data.profanity;
+      document.getElementById("rmv-links").checked = data.links;
+      document.getElementById("rmv-all").checked = data.removeAll;
   });
 }
 function findAncestor (current, targetClass, exceptionClass='') {
@@ -953,6 +955,6 @@ setInterval(function() {
   document.querySelectorAll(selectorString).forEach(processComment);
 }, 100);
 
-document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('save').addEventListener('click', save_options);
+document.addEventListener('DOMContentLoaded', restore_options, true);
 },{"swearjar":4}]},{},[5]);
