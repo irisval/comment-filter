@@ -14,7 +14,7 @@
 	},
 	"background": {
 		// "page": "html/popup.html",
-		 "scripts": ["js/popup.js"]
+		 // "scripts": ["js/popup.js"]
 	},
 	"content_scripts": [
 		{

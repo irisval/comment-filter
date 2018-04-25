@@ -2,7 +2,8 @@
 <html>
 <head>
 	<title>Comment Filter Settings</title>
-	<link href="css/main.css">
+	<link rel="stylesheet" href="../css/main.css">
+	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 </head>
 
 <body>
@@ -12,13 +13,19 @@
 	<input type="checkbox" id="rmv-links" name="rmv-links">
 	<label for="rmv-links">Remove Comments with Links (spambots)</label><br>
 	<input type="checkbox" id="rmv-all" name="rmv-all">
-	<label for="rmv-all">Remove All Comments</label><br>
-	<label for="blacklist">Add words to blacklist</label><br>
-	<input type="text" id="blacklist" name="blacklist">
+	<label for="rmv-all">Remove All Comments</label><br><br>
+
+	<label for="blacklist">Add word to blacklist</label><br>
+	<input type="text" id="blacklist" name="blacklist"><br>
+	<div id="blacklist-area"></div>
+	<label for="whitelist">Add word to whitelist</label><br>
+	<input type="text" id="whitelist" name="whitelist">
+	<!-- <label for="blacklist">Add words to blacklist</label><br>
+	<input type="text" id="blacklist" name="blacklist"> -->
 
 
 
-	<div id="status"></div>
+	<div id="status"></div><br>
 	<button id="save">Save</button>
 
 	<script src="../js/bundle.js"></script>
