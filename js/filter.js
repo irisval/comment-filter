@@ -4,7 +4,7 @@ function save_options() {
   var op2 = document.getElementById('rmv-links').checked;
   var op3 = document.getElementById('rmv-all').checked;
   var op4 = document.getElementById('blacklist').value;
-  var op5 = document.getElementById('whitelist').value;
+  // var op5 = document.getElementById('whitelist').value;
 
   chrome.storage.sync.set({
     profanity: op1,
@@ -18,7 +18,7 @@ function save_options() {
       }, 1000);
   });
 
-  chrome.storage.sync.get({blacklist: []}, function (data) {
+  chrome.storage.sync.get(null, function (data) {
     var blacklist = data.blacklist;
     blacklist.push(op4);
     chrome.storage.sync.set({
@@ -43,12 +43,13 @@ function restore_options() {
     var blacklistArea = document.getElementById('blacklist-area');
     for (var i = 0; i < blacklist.length; i++) {
       var word = document.createElement("div");
-      
+
       var btn = document.createElement("button");
+      btn.className = "blacklistDel"
       btn.innerHTML = '<i class="fa fa-minus-square del-word"></i>';
-      btn.addEventListener("click", function() {
-        this.parentNode.parentNode.removeChild(this.parentNode);
-      });
+      btn.id = i;
+      console.log("the id of this btn is " + i);
+     
 
       var t = document.createTextNode(blacklist[i]);
 
@@ -56,7 +57,32 @@ function restore_options() {
       word.appendChild(t);
       blacklistArea.appendChild(word); 
     }
-  });
+
+    var buttons = document.querySelectorAll('.blacklistDel');
+    console.log(buttons);
+
+    buttons.forEach(function(e) {
+
+      e.addEventListener("click", function() {
+        this.parentNode.parentNode.removeChild(this.parentNode);
+       
+          chrome.storage.sync.get(null, function (data) {
+            var x = data.blacklist;
+            x.splice(e.id,1);
+            // todo: find a more efficient way of removing values from blacklist array
+            chrome.storage.sync.set({
+              blacklist: x
+            }, function () {
+                chrome.storage.sync.get(null, function (data) {
+                  console.log(data.blacklist);
+                });
+              });
+
+          });
+       
+      });
+    });
+});
 }
 
 function findAncestor(current, targetClass, exceptionClass = '') {
@@ -106,3 +132,4 @@ setInterval(function () {
 
 document.getElementById('save').addEventListener('click', save_options);
 document.addEventListener('DOMContentLoaded', restore_options, true);
+
