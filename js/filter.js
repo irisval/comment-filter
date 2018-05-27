@@ -92,6 +92,22 @@ function findAncestor(current, targetClass, exceptionClass = '') {
   return current;
 }
 
+
+// function hasBlacklist(text) {
+//   chrome.storage.sync.get(null, function(data) {
+//     var blacklist = data.blacklist;
+//     if (blacklist.length > 0) {
+//       for (var i = 0; i < blacklist.length; i++) {
+//         if (text.indexOf(blacklist[i] !== -1)) {
+//           // console.log("true: " + text + " " + text.indexOf(blacklist[i]));
+//           return true;
+//         }
+//       }
+//     }
+//   });
+//   return false;
+// }
+var swearjar = require('swearjar');
 var selectors = ['#content-text'];
 var outerCommentSelector = 'ytd-item-section-renderer';
 var outerSubcommentSelector = 'ytd-comment-replies-renderer';
@@ -100,12 +116,13 @@ var processComment = function (comment) {
   comment.original = comment.innerHTML;
   comment.classList.add('parsed');
   chrome.storage.sync.get(null, function (data) {
+  var blacklist = data.blacklist;
+
     if (data.removeAll) {
       document.getElementById('comments').parentNode.removeChild(document.getElementById('comments'));
     } else {
       if (data.profanity) {
         if (swearjar.profane(comment.original)) {
-          console.log(comment.original);
           comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
           comment.outerComment.parentNode.removeChild(comment.outerComment);
         }
@@ -116,6 +133,17 @@ var processComment = function (comment) {
           comment.outerComment.parentNode.removeChild(comment.outerComment);
         }
       }
+      if (blacklist.length > 0) {
+        // todo: figure out why "if (hasBlacklist(comment.original)" doesn't work
+        for (var i = 0; i < blacklist.length; i++) {
+          if (comment.original.toUpperCase().indexOf(blacklist[i].toUpperCase()) !== -1) {
+            comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
+            comment.outerComment.parentNode.removeChild(comment.outerComment);
+            break;
+          }
+        }
+      }
+          
     }
   });
 }
@@ -130,6 +158,8 @@ setInterval(function () {
   document.querySelectorAll(selectorString).forEach(processComment);
 }, 100);
 
-document.getElementById('save').addEventListener('click', save_options);
-document.addEventListener('DOMContentLoaded', restore_options, true);
+if (document.getElementById('save')) {
+  document.getElementById('save').addEventListener('click', save_options);
+}
 
+document.addEventListener('DOMContentLoaded', restore_options, true);
