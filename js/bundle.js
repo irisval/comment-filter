@@ -1,4 +1,8 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const height = document.body.clientHeight;
+document.body.style.height = `${height + 1}px`;
+setTimeout(() => document.body.style.height = `${height + 2}px`, 50);
+
 function saveOptions() {
   console.log('SKRT');
   var op1 = document.getElementById('rmv-profanity').checked;
@@ -22,14 +26,9 @@ function saveOptions() {
       removeAll: op3,
       blacklist: blacklist,
       whitelist: whitelist
-    }, function () {
-        var status = document.getElementById('status');
-        status.textContent = 'Options saved.';
-        setTimeout(function () {
-          status.textContent = '';
-        }, 1000);
-      });
     });
+    });
+  location.reload()
 }
 
 function populateArea(color, list, area) {
@@ -38,7 +37,7 @@ function populateArea(color, list, area) {
 
       var btn = document.createElement('button');
       btn.className = color + 'listDel'
-      btn.innerHTML = '<i class="fa fa-minus-square del-word"></i>';
+      btn.innerHTML = '<i class="fa fa-times fa-lg del-word"></i>';
       btn.id = i;
      
 
@@ -100,25 +99,6 @@ function findAncestor(current, targetClass, exceptionClass = '') {
   return current;
 }
 
-
-// function hasBlacklist(text) {
-//   chrome.storage.sync.get(null, function(data) {
-//     var blacklist = data.blacklist;
-//     if (blacklist.length > 0) {
-//       for (var i = 0; i < blacklist.length; i++) {
-//         if (text.toUpperCase().indexOf(blacklist[i].toUpperCase()) !== -1) {
-//           return true;
-//         }
-//         console.log('jenn: ' + text + ' ' + text.indexOf(blacklist[i]));
-//       }
-//     }
-//   });
-//   return false;
-// }
-
-
-/// difference btwn function() vs var = function()
-
 var containsValInList = function(text, list) {
   for (var i = 0; i < list.length; i++) {
     if (text.toUpperCase().indexOf(list[i].toUpperCase()) !== -1) {
@@ -140,7 +120,6 @@ var processComment = function (comment) {
   var blacklist = data.blacklist;
   var whitelist = data.whitelist;
   var flagged = false;
-  var whitelisted = false;
 
     if (data.removeAll) {
       document.getElementById('comments').parentNode.removeChild(document.getElementById('comments'));
@@ -179,7 +158,6 @@ if (document.getElementById('save')) {
   document.getElementById('save').addEventListener('click', saveOptions);
 }
 document.addEventListener('DOMContentLoaded', restoreOptions, true);
-
 },{"swearjar":3}],2:[function(require,module,exports){
 module.exports={
   "anus": ["sexual"],

@@ -1,3 +1,7 @@
+const height = document.body.clientHeight;
+document.body.style.height = `${height + 1}px`;
+setTimeout(() => document.body.style.height = `${height + 2}px`, 50);
+
 function saveOptions() {
   console.log('SKRT');
   var op1 = document.getElementById('rmv-profanity').checked;
@@ -21,14 +25,9 @@ function saveOptions() {
       removeAll: op3,
       blacklist: blacklist,
       whitelist: whitelist
-    }, function () {
-        var status = document.getElementById('status');
-        status.textContent = 'Options saved.';
-        setTimeout(function () {
-          status.textContent = '';
-        }, 1000);
-      });
     });
+    });
+  location.reload()
 }
 
 function populateArea(color, list, area) {
@@ -37,7 +36,7 @@ function populateArea(color, list, area) {
 
       var btn = document.createElement('button');
       btn.className = color + 'listDel'
-      btn.innerHTML = '<i class="fa fa-minus-square del-word"></i>';
+      btn.innerHTML = '<i class="fa fa-times fa-lg del-word"></i>';
       btn.id = i;
      
 
@@ -120,7 +119,6 @@ var processComment = function (comment) {
   var blacklist = data.blacklist;
   var whitelist = data.whitelist;
   var flagged = false;
-  var whitelisted = false;
 
     if (data.removeAll) {
       document.getElementById('comments').parentNode.removeChild(document.getElementById('comments'));

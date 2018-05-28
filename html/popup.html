@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Comment Filter Settings</title>
+	<title>YouTube Comment Filter</title>
 	<link rel="stylesheet" href="../css/main.css">
 	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+
 </head>
 
 <body>
-	<h1>Settings</h1>
-	<input type="checkbox" id="rmv-profanity" name="rmv-profanity">
+	<h1>YouTube Comment Filter</h1>
+	<input type="checkbox" id="rmv-profanity" class="filled-in" name="rmv-profanity">
 	<label for="rmv-profanity">Remove Comments with Profanity</label><br>
-	<input type="checkbox" id="rmv-links" name="rmv-links">
+	<input type="checkbox" id="rmv-links" class="filled-in" name="rmv-links">
 	<label for="rmv-links">Remove Comments with Links (spambots)</label><br>
-	<input type="checkbox" id="rmv-all" name="rmv-all">
+	<input type="checkbox" id="rmv-all" class="filled-in" name="rmv-all">
 	<label for="rmv-all">Remove All Comments</label><br><br>
 
-	<label for="blacklist">Add word to blacklist</label><br>
+	<label class="list-label" for="blacklist">Add word to blacklist:</label><br>
 	<input type="text" id="blacklist" name="blacklist"><br>
 	<div id="blacklist-area"></div>
-	<label for="whitelist">Add word to whitelist</label><br>
+	<br>
+	<label class="list-label" for="whitelist">Add word to whitelist:</label><br>
 	<input type="text" id="whitelist" name="whitelist"><br>
 	<div id="whitelist-area"></div>
 	
