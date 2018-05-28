@@ -99,21 +99,15 @@ function findAncestor(current, targetClass, exceptionClass = '') {
   return current;
 }
 
+var containsValInList = function(text, list) {
+  for (var i = 0; i < list.length; i++) {
+    if (text.toUpperCase().indexOf(list[i].toUpperCase()) !== -1) {
+      return true;
+    }
+  }
+  return false;
+}
 
-// function hasBlacklist(text) {
-//   chrome.storage.sync.get(null, function(data) {
-//     var blacklist = data.blacklist;
-//     if (blacklist.length > 0) {
-//       for (var i = 0; i < blacklist.length; i++) {
-//         if (text.indexOf(blacklist[i] !== -1)) {
-//           // console.log('true: ' + text + ' ' + text.indexOf(blacklist[i]));
-//           return true;
-//         }
-//       }
-//     }
-//   });
-//   return false;
-// }
 var swearjar = require('swearjar');
 var selectors = ['#content-text'];
 var outerCommentSelector = 'ytd-item-section-renderer';
@@ -124,28 +118,29 @@ var processComment = function (comment) {
   comment.classList.add('parsed');
   chrome.storage.sync.get(null, function (data) {
   var blacklist = data.blacklist;
+  var whitelist = data.whitelist;
+  var flagged = false;
+  var whitelisted = false;
 
     if (data.removeAll) {
       document.getElementById('comments').parentNode.removeChild(document.getElementById('comments'));
     } else {
-      if (data.profanity && swearjar.profane(comment.original)) {
-        comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
-        comment.outerComment.parentNode.removeChild(comment.outerComment);
-      }
-      else if (data.links && comment.getElementsByTagName('A').length > 0) {
-        comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
-        comment.outerComment.parentNode.removeChild(comment.outerComment);
-      }
-      else if (blacklist.length > 0) {
-        // todo: figure out why "if (hasBlacklist(comment.original)"" doesn't work
-        for (var i = 0; i < blacklist.length; i++) {
-          if (comment.original.toUpperCase().indexOf(blacklist[i].toUpperCase()) !== -1) {
-            comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
-            comment.outerComment.parentNode.removeChild(comment.outerComment);
-            break;
-          }
+      if (data.profanity && swearjar.profane(comment.original)) {  
+        if (!containsValInList(comment.original, whitelist)) {
+          flagged = true;
         }
       }
+      else if (data.links && comment.getElementsByTagName('A').length > 0) {
+        flagged = true;
+      }
+      else if (blacklist.length > 0 && containsValInList(comment.original, blacklist)) {
+        flagged = true;
+      } 
+    }
+    
+    if (flagged) {
+      comment.outerComment = findAncestor(comment, outerCommentSelector, outerSubcommentSelector);
+      comment.outerComment.parentNode.removeChild(comment.outerComment);
     }
   });
 }
@@ -163,5 +158,4 @@ setInterval(function () {
 if (document.getElementById('save')) {
   document.getElementById('save').addEventListener('click', saveOptions);
 }
-
 document.addEventListener('DOMContentLoaded', restoreOptions, true);
