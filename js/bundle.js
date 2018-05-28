@@ -154,7 +154,19 @@ setInterval(function () {
   document.querySelectorAll(selectorString).forEach(processComment);
 }, 100);
 
+
+function enterKey(e) {
+  e.preventDefault();
+  if (e.keyCode === 13) {
+    document.getElementById('save').click();
+  }
+}
 if (document.getElementById('save')) {
+  var b = document.getElementById("blacklist");
+  var w = document.getElementById("whitelist");
+
+  b.addEventListener("keyup", enterKey);
+  w.addEventListener("keyup", enterKey);
   document.getElementById('save').addEventListener('click', saveOptions);
 }
 document.addEventListener('DOMContentLoaded', restoreOptions, true);

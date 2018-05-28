@@ -112,7 +112,7 @@ var selectors = ['#content-text'];
 var outerCommentSelector = 'ytd-item-section-renderer';
 var outerSubcommentSelector = 'ytd-comment-replies-renderer';
 
-var processComment = function (comment) {
+var processComment = function(comment) {
   comment.original = comment.innerHTML;
   comment.classList.add('parsed');
   chrome.storage.sync.get(null, function (data) {
@@ -143,6 +143,13 @@ var processComment = function (comment) {
   });
 }
 
+function enterKey(e) {
+  e.preventDefault();
+  if (e.keyCode === 13) {
+    document.getElementById('save').click();
+  }
+}
+
 // build the full selector string
 var selectorString = selectors.map(function (sel) {
   return sel + ':not(.parsed)';
@@ -153,7 +160,10 @@ setInterval(function () {
   document.querySelectorAll(selectorString).forEach(processComment);
 }, 100);
 
+
 if (document.getElementById('save')) {
+  document.getElementById("blacklist").addEventListener("keyup", enterKey);
+  document.getElementById("whitelist").addEventListener("keyup", enterKey);
   document.getElementById('save').addEventListener('click', saveOptions);
 }
 document.addEventListener('DOMContentLoaded', restoreOptions, true);
