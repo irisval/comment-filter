@@ -1,3 +1,4 @@
 # Comment Filter for Youtube
 
-![Screenshot](img.png)
+<br>
+<img height="220px" src="img.png">
